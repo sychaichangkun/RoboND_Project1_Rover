@@ -1,46 +1,84 @@
+## Project: Search and Sample Return
+
+#### Email:sychaichangkun@gmail.com
+#### Slack:@chaichangkun
+---
+
+
+
+**The goals / steps of this project are the following:**  
+
+**Training / Calibration**  
+
+* Download the simulator and take data in "Training Mode"
+* Test out the functions in the Jupyter Notebook provided
+* Add functions to detect obstacles and samples of interest (golden rocks)
+* Fill in the `process_image()` function with the appropriate image processing steps (perspective transform, color threshold etc.) to get from raw images to a map.  The `output_image` you create in this step should demonstrate that your mapping pipeline works.
+* Use `moviepy` to process the images in your saved dataset with the `process_image()` function.  Include the video you produce as part of your submission.
+
+**Autonomous Navigation / Mapping**
+
+* Fill in the `perception_step()` function within the `perception.py` script with the appropriate image processing functions to create a map and update `Rover()` data (similar to what you did with `process_image()` in the notebook).
+* Fill in the `decision_step()` function within the `decision.py` script with conditional statements that take into consideration the outputs of the `perception_step()` in deciding how to issue throttle, brake and steering commands.
+* Iterate on your perception and decision function until your rover does a reasonable (need to define metric) job of navigating and mapping.  
+
 [//]: # (Image References)
-[image_0]: ./misc/rover_image.jpg
-# Search and Sample Return Project
-![alt text][image_0] 
 
-This project is modeled after the [NASA sample return challenge](https://www.nasa.gov/directorates/spacetech/centennial_challenges/sample_return_robot/index.html) and it will give you first hand experience with the three essential elements of robotics, which are perception, decision making and actuation.  You will carry out this project in a simulator environment built with the Unity game engine.  
+[image1]: ./sample.png
+[image2]: ./sample2.png
 
-## The Simulator
-The first step is to download the simulator build that's appropriate for your operating system.  Here are the links for [Linux](https://s3-us-west-1.amazonaws.com/udacity-robotics/Rover+Unity+Sims/Linux_Roversim.zip), [Mac](	https://s3-us-west-1.amazonaws.com/udacity-robotics/Rover+Unity+Sims/Mac_Roversim.zip), or [Windows](https://s3-us-west-1.amazonaws.com/udacity-robotics/Rover+Unity+Sims/Windows_Roversim.zip).  
+## [Rubric](https://review.udacity.com/#!/rubrics/916/view) Points
+### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
-You can test out the simulator by opening it up and choosing "Training Mode".  Use the mouse or keyboard to navigate around the environment and see how it looks.
+---
+### Writeup / README
 
-## Dependencies
-You'll need Python 3 and Jupyter Notebooks installed to do this project.  The best way to get setup with these if you are not already is to use Anaconda following along with the [RoboND-Python-Starterkit](https://github.com/ryan-keenan/RoboND-Python-Starterkit). 
+#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
 
+You're reading it!
+### Notebook Analysis
+#### 1. Run the functions provided in the notebook on test images (either data you recorded or the test data provided). Add/modify functions to allow for color selection of obstacles and rock samples.
 
-Here is a great link for learning more about [Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111)
+I have run, added and modified functions in the file. My dataset is recorded in folder ./my_dataset2.
 
-## Recording Data
-I've saved some test data for you in the folder called `test_dataset`.  In that folder you'll find a csv file with the output data for steering, throttle position etc. and the pathnames to the images recorded in each run.  I've also saved a few images in the folder called `calibration_images` to do some of the initial calibration steps with.  
+The way to select obstacles, rocks and navigable area are as follows:
+* Set color_threshold to be (160, 160, 160) as default which is the navigable area. (line 3-15 in color_threshold block)
+* Set obstacle_threshold to be (0, 160, 0, 160, 0, 160) which means the whole picture is obstacle excluding the navigable area and the black area. That is the color of the obstacles.(line 17-30)
+* Set rock_threshold to be (130, 180, 100,170,0,30) the as same way rock_threshold does.(line 32-44)
 
-The first step of this project is to record data on your own.  To do this, you should first create a new folder to store the image data in.  Then launch the simulator and choose "Training Mode" then hit "r".  Navigate to the directory you want to store data in, select it, and then drive around collecting data.  Hit "r" again to stop data collection.
-
-## Data Analysis
-Included in the IPython notebook called `Rover_Project_Test_Notebook.ipynb` are the functions from the lesson for performing the various steps of this project.  The notebook should function as is without need for modification at this point.  To see what's in the notebook and execute the code there, start the jupyter notebook server at the command line like this:
-
-```sh
-jupyter notebook
-```
-
-This command will bring up a browser window in the current directory where you can navigate to wherever `Rover_Project_Test_Notebook.ipynb` is and select it.  Run the cells in the notebook from top to bottom to see the various data analysis steps.  
-
-The last two cells in the notebook are for running the analysis on a folder of test images to create a map of the simulator environment and write the output to a video.  These cells should run as-is and save a video called `test_mapping.mp4` to the `output` folder.  This should give you an idea of how to go about modifying the `process_image()` function to perform mapping on your data.  
-
-## Navigating Autonomously
-The file called `drive_rover.py` is what you will use to navigate the environment in autonomous mode.  This script calls functions from within `perception.py` and `decision.py`.  The functions defined in the IPython notebook are all included in`perception.py` and it's your job to fill in the function called `perception_step()` with the appropriate processing steps and update the rover map. `decision.py` includes another function called `decision_step()`, which includes an example of a conditional statement you could use to navigate autonomously.  Here you should implement other conditionals to make driving decisions based on the rover's state and the results of the `perception_step()` analysis.
-
-`drive_rover.py` should work as is if you have all the required Python packages installed. Call it at the command line like this: 
-
-```sh
-python drive_rover.py
-```  
-
-Then launch the simulator and choose "Autonomous Mode".  The rover should drive itself now!  It doesn't drive that well yet, but it's your job to make it better!
+As is shown in the pic below, the obstacle is red and the navigable area is green.
+![alt text][image1]
 
 
+#### 2.Populate the process_image() function with the appropriate analysis steps to map pixels identifying navigable terrain, obstacles and rock samples into a worldmap. Run process_image() on your test data using the moviepy functions provided to create video output of your result.
+A video is created ./output/test_mapping.mp4
+
+You can see the navigable terrain and obstacles are plot in the worldmap when the rover goes to anywhere.
+![alt text][image2]
+
+The process_image() does as follows:
+* Use color theshold to detect obstacles, rocks and navigable area. (line 11-13)
+* Convert there pictures into rover-centric and then into world coordinates. (line 16-18)
+* Plot obstacles, rocks and navigable area on worldmap, in red, blue, green seperately. (line 24-37)
+
+
+### Autonomous Navigation and Mapping
+
+#### 1. Fill in the perception_step() (at the bottom of the perception.py script) and decision_step() (in decision.py) functions in the autonomous mapping scripts such that your rover can navigate and map autonomously. Explain how you did this in your writeup and discuss your results.
+
+The way to autonomous mapping is much like process_image() does:
+* Select the navigable, obstacle and rock area and their pixels (line 110-112)
+* Convert the pixels into world coordinates. (line 122-130)
+* Plot the coordinates with different color. (line 135-137)
+
+### Discussion
+
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+
+1.I spent much time on map the navigable and obstacles onto the original map. The function pix_to_world cannot appropriately convert corrdinates and I modified the way to get yaw. Then it works.
+
+2.I hope to add the pick function in decision.py but I have no idea how to send the 'pick' command.
+To avoid being stuck, I followed Luqiang's method, adding a new variable to count the stoptime. If the stoptime exceeds a threshold, the rover will rotate clockwise.
+
+
+3.The thesholded image should be displayed in the Roversim program, but I didn't see anything. After setting the Rover.vision_image to be 255 times of binary image, I could see the vision image on the bottom left.
